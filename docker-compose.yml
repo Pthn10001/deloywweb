@@ -35,8 +35,6 @@ services:
     networks:
       - laravel
     restart: always
-    command: >
-      sh -c "composer install && php artisan migrate --force && php-fpm"
 
   nginx:
     image: nginx:alpine
@@ -76,7 +74,7 @@ services:
       - ./CothingNew:/var/www/html
     tty: true
     stdin_open: true
-    command: sh -c "npm install && npm run dev"
+    command: tail -f /dev/null
     networks:
       - laravel
 

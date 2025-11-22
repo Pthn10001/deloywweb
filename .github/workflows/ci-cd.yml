@@ -16,9 +16,15 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.0'
           extensions: mbstring, bcmath, xml, curl, openssl, pdo, pdo_mysql, tokenizer, fileinfo
 
+      - name: Verify PHP and Composer
+        run: |
+          echo "== php version =="
+          php -v
+          echo "\n== composer version =="
+          composer --version || true
       - name: Install Composer dependencies
         run: |
           cd CothingNew

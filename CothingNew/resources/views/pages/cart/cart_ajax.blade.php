@@ -1,118 +1,112 @@
 @extends('layout')
 @section('content')
-					<div class="shopping_cart_area"style="width: 100%;">
-						<div class="row">
-							<div class="col-12">
-								<div class="table_desc">
-									<div class="cart_page table-responsive">
-										<table style="width: 100%;" >
-												<tr style="font-size: 18px; border-bottom: 1px solid;;">
-													<th class="product_remove">Xóa</th>
-													<th class="product_thumb">Hình ảnh </th>
-													<th class="product_remove">Còn</th>
-													<th class="product_name">Sản phẩm </th>
-													<th class="product-price">Giá</th>
-													<th class="product_quantity">Số lượng</th>
-													<th class="product_total">Size</th>
-													<th>Thành tiền</th>
-												</tr>
-											@if(Session()->get('cart'))
-												<?php $total=0;?>
-													<form action="{{url('/update-cart')}}" method="post">
-														{{csrf_field()}}
-														@foreach(Session()->get('cart') as $key =>$cart)
-														<?php
-														$price=(int)$cart["product_price"];
-														$qty=(int)$cart["product_qty"];
-														$suptotal=$price*$qty;
-														$total+=$suptotal;
-														?>
-														<tbody>
-														<tr>
-														<td class="product_remove">
-															<a class="cart_quantity_delete" href="{{url('/delete-cart/'.$cart['session_id'])}}"><i class="fa fa-trash-o"></i></a>
-														</td>
-														<td class="" >
-															<a href=""><img src="{{asset('upload/product/'.$cart['product_image'])}}" width="96", height="86" alt="" /></a>
-														</td>
-														<td>
-														{{$cart["product_tong"]}}
-														</td>
-														<td class="product_name">
-															<a>{{$cart["product_name"]}}</a>
-														</td>
-														<td class="product-price">
-															<a>{{$cart["product_price"]}}</a>
-														</td>
-														<td class="cart_quantity">
-														<input class="cart_quantity" type="number" name="cart_qty[{{$cart['session_id']}}]" value="{{$cart['product_qty']}}" min="1" max="{{$cart['product_tong']}}" style="width: 60px;">
-														</td>
 
-														<td>
-														<input name="cart_size[{{$cart['session_id']}}]" value="{{$cart['product_size']}}">
-														</td>
-														<td class="product_total">
-															<p class="cart_total_price">
-																{{number_format($suptotal,0,',','.')}}
-															</p>
-														</td>
-													</tr>
-														</tbody>
-												@endforeach
-													<tr>
-														<td class="cart_submit">
-														<button type="submit" value="Cập nhật" name="update_cart">Cập nhật</button>
-														</td>
-													</tr>
-													<tr style="border: solid;">
-														<td>
-															<ul>
-																<li>Thànhtiền: <span>{{$total}}</span></li>
-																<li>Thuế: <span>0</span></li>
-															</ul>
-														</td>
-														<td >
-															<ul><li>Phí ship: <span>Free</span></li>
-																<li>Tổng tiền: <span>{{$total}} </span></li>
-															</ul>
-														</td>
-													</tr>
-													</tr>
-														<tr>
-															<td class="checkout_btn">	<?php
-																$customer_id=Session()->get('customer_id');
-																	if($customer_id==NULL)	{
-																	?>
-																	<a class="cart_submit check_out" href="{{URL::to('/login-checkout')}}">Thanh toán</a>
-																<?php
-																	}else
-																	{
-																?>
-																<a class=" check_out" href="{{URL::to('/checkout')}}">Thanh toán</a>
-															</td>
-															<td>
-																<a class="btn btn-default check_out " href="{{URL::to('/login-checkout')}}">Xóa tất cả</a>
-																<?php
-																	}
-																?>
-															</td>
-														</tr>
-															</div>
-														</td>
-													</tr>
-													@else
-													<tr>
-														@php
-																echo" Bạn chưa thêm sản phẩm vào giỏ hàng";
-														@endphp
-													</tr>
-												</form>
-												@endif
-										</table>
-									</div>
-								</div>
-								</div>
-						</div>
-                     </div>
+    <div class="shopping_cart_area container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="table_desc">
+                    <div class="cart_page table-responsive">
+                        @if(session('cart') && count(session('cart')) > 0)
+                            <form action="{{ url('/update-cart') }}" method="POST">
+                                @csrf
+                                <table class="table table-bordered" style="width:100%; text-align:center;">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Xóa</th>
+                                            <th>Hình ảnh</th>
+                                            <th>Còn</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Giá</th>
+                                            <th>Số lượng</th>
+                                            <th>Size</th>
+                                            <th>Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php $total = 0; @endphp
+                                        @foreach(session('cart') as $key => $cart)
+                                            @php
+                                                $price = (int) $cart['product_price'];
+                                                $qty = (int) $cart['product_qty'];
+                                                $subtotal = $price * $qty;
+                                                $total += $subtotal;
+                                            @endphp
+                                            <tr>
+                                                <td>
+                                                    <a href="{{ url('/delete-cart/' . $cart['session_id']) }}"
+                                                        class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Xóa sản phẩm này khỏi giỏ hàng?')">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <img src="{{ asset('upload/product/' . $cart['product_image']) }}" width="80"
+                                                        height="80" alt="image">
+                                                </td>
+                                                <td>{{ $cart['product_tong'] }}</td>
+                                                <td>{{ $cart['product_name'] }}</td>
+                                                <td>{{ number_format($cart['product_price'], 0, ',', '.') }} đ</td>
+                                                <td>
+                                                    <input type="number" name="cart_qty[{{ $cart['session_id'] }}]"
+                                                        value="{{ $cart['product_qty'] }}" min="1" max="{{ $cart['product_tong'] }}"
+                                                        style="width:60px;" class="form-control form-control-sm text-center">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="cart_size[{{ $cart['session_id'] }}]"
+                                                        value="{{ $cart['product_size'] }}"
+                                                        class="form-control form-control-sm text-center">
+                                                </td>
+                                                <td>{{ number_format($subtotal, 0, ',', '.') }} đ</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
 
-    @endsection
+                                <div class="row justify-content-between mt-3">
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-primary w-100">Cập nhật giỏ hàng</button>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <h5 class="mb-0">Tổng tiền:
+                                            <strong class="text-danger">
+                                                {{ number_format($total, 0, ',', '.') }} đ
+                                            </strong>
+                                        </h5>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <a href="{{ url('/') }}" class="btn btn-secondary w-100">Tiếp tục mua hàng</a>
+                                </div>
+                                <div class="col-md-6">
+                                    @if(session('customer_id'))
+                                        <a href="{{ url('/checkout') }}" class="btn btn-success w-100">Thanh toán</a>
+                                    @else
+                                        <a href="{{ url('/login-checkout') }}" class="btn btn-warning w-100">Đăng nhập để thanh
+                                            toán</a>
+                                    @endif
+
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-2">
+                                <a href="{{ url('/clear-cart') }}" class="btn btn-outline-danger"
+                                    onclick="return confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')">
+                                    Xóa tất cả
+                                </a>
+                            </div>
+
+                        @else
+                            <div class="alert alert-warning text-center my-4">
+                                Bạn chưa thêm sản phẩm nào vào giỏ hàng.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@endsection

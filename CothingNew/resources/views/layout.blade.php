@@ -37,10 +37,10 @@
                                 <div class="switcher">
                                     <ul>
                                         <li class="languages">
-                                            <a href="#"><img src="{{ asset('assets/img/logo/fontlogo.jpg') }}" alt="">+0993282493</a>
+                                            <a href="#"><img src="{{ asset('assets/img/logo/fontlogo.jpg') }}" alt="">078 387 xxx</a>
                                         </li>
                                         <li class="currency">
-                                            <a href="mailto:NgoMtien@gmail.com">NgoMtien@gmail.com</a>
+                                            <a href="mailto:Phanthnhien27">Phanthnhien27@gmail.com</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -172,8 +172,8 @@
                                                 <li><a href="{{ URL::to('/checkout') }}">Thanh toán</a></li>
                                                 <li><a href="{{ URL::to('/giohang') }}">Giỏ hàng</a></li>
                                                 <li><a href="#">Liên hệ</a></li>
-                                                <li><a href="blog.html">blog</a></li>
-                                                <li><a href="contact.html">contact us</a></li>
+                                                <li><a href="{{ URL::to('/blog') }}">BLOG</a></li>
+
                                             </ul>
                                         </nav>
                                     </div>
@@ -208,8 +208,9 @@
                                                 <li><a href="{{ URL::to('/checkout') }}">Thanh toán</a></li>
                                                 <li><a href="{{ URL::to('/giohang') }}">Giỏ hàng</a></li>
                                                 <li><a href="#">pages</a></li>
-                                                <li><a href="#">blog</a></li>
-                                                <li><a href="#">contact us</a></li>
+                                                <li><a href="{{ URL::to('/blog') }}">BLOG</a></li>
+
+                                               
                                             </ul>
                                         </nav>
                                     </div>
@@ -409,8 +410,8 @@
                         <div class="single-widget">
                             <h2 style="color: #fff; font-size: 25px;">MUA HÀNG TRỰC TUYẾN</h2>
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">0935938598</a></li>
-                                <li><a href="#">NgoMTien@gmail.com</a></li>
+                                <li><a href="#">078 387 xxxx</a></li>
+                                <li><a href="#">Phanthnhien27</a></li>
 
                             </ul>
                         </div>
@@ -419,8 +420,8 @@
                         <div class="single-widget">
                             <h2 style="color: #fff; font-size: 25px;">HOTLINE GÓP Ý</h2>
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">0935938598</a></li>
-                                <li><a href="#">NgoMTien@gmail.com</a></li>
+                                <li><a href="#">078 387 xxxx</a></li>
+                                <li><a href="#">Phanthnhien27</a></li>
                             </ul>
                         </div>
                     </div>

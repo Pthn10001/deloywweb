@@ -3,17 +3,13 @@
 @section('admin_content')
 
 @php
-    // Tổng số lượng tồn kho tất cả sản phẩm
+    // ===== Thống kê cơ bản =====
     $totalQty = $tongquan->sum('product_quantity');
-
-    // Sản phẩm còn hàng / hết hàng
     $inStock  = $tongquan->where('product_quantity', '>', 0)->count();
     $outStock = $tongquan->where('product_quantity', '<=', 0)->count();
-
-    // Tổng số sản phẩm (theo mã sp), không phải tổng tồn kho
     $totalProducts = $tongquan->count();
 
-    // Gom theo danh mục (từ $qty_category là join product + category)
+    // Gom theo danh mục
     $byCategory = collect($qty_category)->groupBy('category_id')->map(function($items){
         return [
             'category_name' => $items->first()->category_name ?? 'Không rõ',
@@ -22,137 +18,175 @@
         ];
     })->sortByDesc('sum_qty');
 
-    // Top 5 tồn kho thấp để dễ refill
+    // Top 5 tồn kho thấp
     $lowStock = $tongquan->sortBy('product_quantity')->take(5);
 @endphp
 
 <div class="row">
-    {{-- Thẻ chào --}}
     <div class="col-sm-12">
-        <h3 class="mb-3" style="color:teal;">Chào bạn đến với trang Admin</h3>
+        <h3 class="mb-3" style="color:teal;">📊 Bảng điều khiển quản trị</h3>
     </div>
 
     {{-- Cards tổng quan --}}
-    <div class="col-sm-6 col-md-3">
-        <div class="panel b-a bg-white">
-            <div class="panel-body">
-                <div class="h1 m0">{{ number_format($totalProducts) }}</div>
-                <div class="text-muted">Sản phẩm (SKU)</div>
-            </div>
-            <div class="panel-footer bg-light lter">
-                <span class="text-muted">Tổng số mã sản phẩm</span>
-            </div>
+    <div class="col-md-3">
+        <div class="panel b-a bg-white text-center p-3">
+            <h2>{{ number_format($totalProducts) }}</h2>
+            <p class="text-muted mb-0">Sản phẩm (SKU)</p>
         </div>
     </div>
-
-    <div class="col-sm-6 col-md-3">
-        <div class="panel b-a bg-white">
-            <div class="panel-body">
-                <div class="h1 m0">{{ number_format($totalQty) }}</div>
-                <div class="text-muted">Tổng tồn kho</div>
-            </div>
-            <div class="panel-footer bg-light lter">
-                <span class="text-muted">Số lượng tồn tất cả sản phẩm</span>
-            </div>
+    <div class="col-md-3">
+        <div class="panel b-a bg-white text-center p-3">
+            <h2>{{ number_format($totalQty) }}</h2>
+            <p class="text-muted mb-0">Tổng tồn kho</p>
         </div>
     </div>
-
-    <div class="col-sm-6 col-md-3">
-        <div class="panel b-a bg-white">
-            <div class="panel-body">
-                <div class="h1 m0">{{ number_format($inStock) }}</div>
-                <div class="text-muted">Đang còn hàng</div>
-            </div>
-            <div class="panel-footer bg-light lter">
-                <span class="text-muted">Sản phẩm có tồn &gt; 0</span>
-            </div>
+    <div class="col-md-3">
+        <div class="panel b-a bg-white text-center p-3">
+            <h2 class="text-success">{{ number_format($inStock) }}</h2>
+            <p class="text-muted mb-0">Đang còn hàng</p>
         </div>
     </div>
-
-    <div class="col-sm-6 col-md-3">
-        <div class="panel b-a bg-white">
-            <div class="panel-body">
-                <div class="h1 m0">{{ number_format($outStock) }}</div>
-                <div class="text-muted">Hết hàng</div>
-            </div>
-            <div class="panel-footer bg-light lter">
-                <span class="text-muted">Cần nhập thêm</span>
-            </div>
+    <div class="col-md-3">
+        <div class="panel b-a bg-white text-center p-3">
+            <h2 class="text-danger">{{ number_format($outStock) }}</h2>
+            <p class="text-muted mb-0">Hết hàng</p>
         </div>
     </div>
 </div>
+
+<hr>
 
 <div class="row">
     {{-- Bảng tồn kho theo danh mục --}}
     <div class="col-lg-7">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                Tồn kho theo danh mục
-            </div>
+            <div class="panel-heading">📦 Tồn kho theo danh mục</div>
             <div class="table-responsive">
-                <table class="table table-striped b-t b-light">
-                    <thead>
+                <table class="table table-striped">
+                    <thead class="bg-light">
                         <tr>
                             <th>#</th>
                             <th>Danh mục</th>
-                            <th class="text-right">Số sản phẩm</th>
-                            <th class="text-right">Tổng tồn</th>
+                            <th class="text-end">Số sản phẩm</th>
+                            <th class="text-end">Tổng tồn</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($byCategory as $catId => $row)
+                        @foreach($byCategory as $catId => $row)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $row['category_name'] }}</td>
-                                <td class="text-right">{{ number_format($row['count_product']) }}</td>
-                                <td class="text-right">{{ number_format($row['sum_qty']) }}</td>
+                                <td class="text-end">{{ number_format($row['count_product']) }}</td>
+                                <td class="text-end">{{ number_format($row['sum_qty']) }}</td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4">Chưa có dữ liệu danh mục.</td>
-                            </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    {{-- Top 5 tồn kho thấp --}}
+    {{-- Top tồn kho thấp --}}
     <div class="col-lg-5">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                Top 5 sản phẩm tồn kho thấp
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped b-t b-light">
-                    <thead>
+            <div class="panel-heading">⚠️ Top 5 sản phẩm tồn kho thấp</div>
+            <table class="table table-striped">
+                <thead class="bg-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Tên SP</th>
+                        <th class="text-end">Tồn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($lowStock as $p)
                         <tr>
-                            <th>#</th>
-                            <th>Tên SP</th>
-                            <th class="text-right">Tồn</th>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $p->product_name ?? 'SP #'.$p->product_id }}</td>
+                            <td class="text-end {{ $p->product_quantity <= 3 ? 'text-danger fw-bold' : '' }}">
+                                {{ number_format($p->product_quantity) }}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($lowStock as $p)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $p->product_name ?? ('SP #'.$p->product_id) }}</td>
-                                <td class="text-right {{ ($p->product_quantity ?? 0) <= 3 ? 'text-danger' : '' }}">
-                                    {{ number_format($p->product_quantity ?? 0) }}
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="3">Không có dữ liệu.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                    @endforeach
+                </tbody>
+            </table>
+            <div class="panel-footer text-muted"><small>* Đỏ = tồn &le; 3</small></div>
+        </div>
+    </div>
+</div>
+
+{{-- Biểu đồ trực quan --}}
+<hr>
+<div class="row">
+    <div class="col-lg-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">📈 Biểu đồ tồn kho theo danh mục</div>
+            <div class="panel-body">
+                <canvas id="chartCategory" height="250"></canvas>
             </div>
-            <div class="panel-footer bg-light lter">
-                <small class="text-muted">* Đánh dấu đỏ nếu tồn &le; 3</small>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="panel panel-default">
+            <div class="panel-heading">🥧 Tỷ lệ sản phẩm còn / hết hàng</div>
+            <div class="panel-body">
+                <canvas id="chartStock" height="250"></canvas>
             </div>
         </div>
     </div>
 </div>
 
 @endsection
+
+{{-- Thêm script biểu đồ --}}
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+    // ===== Dữ liệu từ PHP sang JS =====
+    const categories = @json($byCategory->pluck('category_name'));
+    const qtys       = @json($byCategory->pluck('sum_qty'));
+    const inStock    = {{ $inStock }};
+    const outStock   = {{ $outStock }};
+
+    // ===== Biểu đồ cột =====
+    new Chart(document.getElementById('chartCategory'), {
+        type: 'bar',
+        data: {
+            labels: categories,
+            datasets: [{
+                label: 'Tồn kho',
+                data: qtys,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // ===== Biểu đồ tròn =====
+    new Chart(document.getElementById('chartStock'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Còn hàng', 'Hết hàng'],
+            datasets: [{
+                data: [inStock, outStock],
+                backgroundColor: ['#4CAF50', '#F44336']
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+});
+</script>
+@endpush

@@ -9,8 +9,8 @@ use App\Models\Product;
 use App\Models\Category;
 
 class HomePageTest extends TestCase
-    use \Illuminate\Foundation\Testing\RefreshDatabase;
 {
+    use \Illuminate\Foundation\Testing\RefreshDatabase;
     /**
      * Test 1: Homepage hiển thị thành công (HTTP 200)
      */
@@ -38,7 +38,7 @@ class HomePageTest extends TestCase
         
         $response->assertStatus(200);
         $response->assertSeeText('Test Shirt');
-        $response->assertSeeText('50000');
+        $response->assertSeeText('50,000'); // Giá được format trong view
     }
 
     /**
@@ -52,7 +52,8 @@ class HomePageTest extends TestCase
         $response = $this->get('/');
         
         $response->assertStatus(200);
-        $this->assertCount(5, $response->viewData('product_all'));
+        $products = $response->viewData('products');
+        $this->assertCount(5, $products);
     }
 
     /**
@@ -62,7 +63,8 @@ class HomePageTest extends TestCase
     {
         $category = Category::factory()->create([
             'category_name' => 'T-Shirt',
-            'category_status' => 0
+            'category_status' => 0,
+            'slug_category_product' => 't-shirt',
         ]);
 
         $product = Product::factory()->create([
@@ -70,10 +72,8 @@ class HomePageTest extends TestCase
         ]);
 
         $response = $this->get('/');
-        
         $response->assertStatus(200);
-        $products = $response->viewData('product_all');
-        
+        $products = $response->viewData('products');
         $this->assertTrue($products->contains('product_id', $product->product_id));
     }
 

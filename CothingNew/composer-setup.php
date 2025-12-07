@@ -366,8 +366,8 @@ function getPlatformIssues(&$errors, &$warnings, $install)
         );
     }
 
-    if (extension_loaded('ionCube Loader') && ioncube_loader_iversion() < 40009) {
-        $ioncube = ioncube_loader_version();
+    if (extension_loaded('ionCube Loader') && function_exists('ioncube_loader_iversion') && ioncube_loader_iversion() < 40009) {
+        $ioncube = function_exists('ioncube_loader_version') ? ioncube_loader_version() : 'unknown';
         $errors['ioncube'] = array(
             'Your ionCube Loader extension ('.$ioncube.') is incompatible with Phar files.',
             'Upgrade to ionCube 4.0.9 or higher or remove this line (path may be different) from your `php.ini` to disable it:',
@@ -1326,7 +1326,7 @@ class NoProxyPattern
 
     public function __construct($pattern)
     {
-        $rules = preg_split('{[\s,]+}', $pattern, null, PREG_SPLIT_NO_EMPTY);
+        $rules = preg_split('{[\s,]+}', $pattern, -1, PREG_SPLIT_NO_EMPTY);
 
         if ($matches = preg_grep('{getcomposer\.org(?::\d+)?}i', $rules)) {
             $this->composerInNoProxy = true;
@@ -1391,9 +1391,9 @@ class HttpClient {
 
     public function get($url)
     {
-        if (function_exists('http_clear_last_response_headers')) {
-           $http_response_header = http_clear_last_response_headers();
-        }
+          if (function_exists('http_clear_last_response_headers')) {
+              http_clear_last_response_headers();
+          }
 
         $context = $this->getStreamContext($url);
         $result = file_get_contents($url, false, $context);

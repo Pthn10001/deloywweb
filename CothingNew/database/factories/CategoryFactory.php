@@ -13,6 +13,7 @@ class CategoryFactory extends Factory
     {
         return [
             'category_name' => $this->faker->word(),
+            'slug_category_product' => $this->faker->slug(),
             'category_desc' => $this->faker->sentence(),
             'category_status' => 0,
         ];

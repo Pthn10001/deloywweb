@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use Tests\TestCase;
 
 class AdminOrderManagementTest extends TestCase
-    use \Illuminate\Foundation\Testing\RefreshDatabase;
 {
+    use \Illuminate\Foundation\Testing\RefreshDatabase;
     /**
      * Test: Admin dashboard - Hiển thị tổng số đơn hàng
      */

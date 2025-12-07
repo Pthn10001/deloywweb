@@ -37,10 +37,10 @@
                                 <div class="switcher">
                                     <ul>
                                         <li class="languages">
-                                            <a href="#"><img src="{{ asset('assets/img/logo/fontlogo.jpg') }}" alt="">+0993282493</a>
+                                            <a href="#"><img src="{{ asset('assets/img/logo/fontlogo.jpg') }}" alt="">078 387 xxxx</a>
                                         </li>
                                         <li class="currency">
-                                            <a href="mailto:NgoMtien@gmail.com">NgoMtien@gmail.com</a>
+                                            <a href="mailto:NgoMtien@gmail.com">Phanthnhien27@gmail</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -173,7 +173,7 @@
                                                 <li><a href="{{ URL::to('/giohang') }}">Giỏ hàng</a></li>
                                                 <li><a href="#">Liên hệ</a></li>
                                                 <li><a href="blog.html">blog</a></li>
-                                                <li><a href="contact.html">contact us</a></li>
+                                               
                                             </ul>
                                         </nav>
                                     </div>
@@ -208,8 +208,8 @@
                                                 <li><a href="{{ URL::to('/checkout') }}">Thanh toán</a></li>
                                                 <li><a href="{{ URL::to('/giohang') }}">Giỏ hàng</a></li>
                                                 <li><a href="#">pages</a></li>
-                                                <li><a href="#">blog</a></li>
-                                                <li><a href="#">contact us</a></li>
+                                                <li><a href="{{ URL::to('/blog') }}">BLOG</a></li>
+                                             
                                             </ul>
                                         </nav>
                                     </div>

@@ -22,7 +22,13 @@ class Order extends Model
         'customer_id',
         'order_status',
         'order_code',
+        'order_total',
         'created_at',
+    ];
+
+    // Giá trị mặc định cho order_status
+    protected $attributes = [
+        'order_status' => 0,
     ];
 
     // QUAN TRỌNG: để created_at trả về đối tượng Carbon (format được ở view)

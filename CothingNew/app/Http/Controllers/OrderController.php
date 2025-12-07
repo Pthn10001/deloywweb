@@ -26,7 +26,21 @@ class OrderController extends Controller
     public function manager_order()
     {
         $this->AuthLogin();
-        $order = Order::orderby('created_at', 'desc')->get();
+        
+        $query = Order::orderby('created_at', 'desc');
+        
+        // Filter by status
+        if (request('status')) {
+            $query->where('order_status', request('status'));
+        }
+        
+        // Search by order code
+        if (request('search')) {
+            $query->where('order_code', 'like', '%' . request('search') . '%');
+        }
+        
+        $order = $query->get();
+        
         return view('admin.manager_order')->with(compact('order'));
     }
 
@@ -127,17 +141,26 @@ class OrderController extends Controller
             return redirect('/login-checkout')->with('message', 'Vui lòng đăng nhập.');
         }
 
-        $orders = Order::where('customer_id', $customer_id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        try {
+            $orders = Order::where('customer_id', $customer_id)
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        // SEO meta cho layout
-        return view('pages.order.history', compact('orders'))->with([
-            'meta_desc'     => 'Lịch sử đơn hàng của tôi tại ShopClothing',
-            'meta_keywords' => 'đơn hàng, lịch sử mua hàng, shopclothing',
-            'meta_title'    => 'Đơn hàng của tôi',
-            'url_canonical' => $request->url(),
-        ]);
+            // SEO meta cho layout
+            return view('pages.order.history', compact('orders'))->with([
+                'meta_desc'     => 'Lịch sử đơn hàng của tôi tại ShopClothing',
+                'meta_keywords' => 'đơn hàng, lịch sử mua hàng, shopclothing',
+                'meta_title'    => 'Đơn hàng của tôi',
+                'url_canonical' => $request->url(),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('order_history error: ' . $e->getMessage());
+            return view('pages.order.history', ['orders' => []])
+                ->with('meta_desc', 'Lịch sử đơn hàng')
+                ->with('meta_keywords', 'đơn hàng')
+                ->with('meta_title', 'Đơn hàng của tôi')
+                ->with('url_canonical', $request->url());
+        }
     }
 
     // GET /orders/{order_code} — Chi tiết đơn (thuộc về khách hiện đăng nhập)
@@ -148,19 +171,23 @@ class OrderController extends Controller
             return redirect('/login-checkout')->with('message', 'Vui lòng đăng nhập.');
         }
 
-        $order = Order::where('order_code', $order_code)
-            ->where('customer_id', $customer_id)
-            ->firstOrFail();
+        try {
+            $order = Order::where('order_code', $order_code)
+                ->where('customer_id', $customer_id)
+                ->firstOrFail();
 
-        $order_details = OrderDetail::where('order_code', $order_code)->get();
-        $shipping = Shipping::find($order->shipping_id);
+            $order_details = OrderDetail::where('order_code', $order_code)->get();
+            $shipping = Shipping::find($order->shipping_id);
 
-        // SEO meta cho layout
-        return view('pages.order.detail', compact('order', 'order_details', 'shipping'))->with([
-            'meta_desc'     => 'Chi tiết đơn hàng ' . $order_code . ' tại ShopClothing',
-            'meta_keywords' => 'chi tiết đơn hàng, shopclothing',
-            'meta_title'    => 'Đơn #' . $order_code,
-            'url_canonical' => $request->url(),
-        ]);
+            // SEO meta cho layout
+            return view('pages.order.detail', compact('order', 'order_details', 'shipping'))
+                ->with('meta_desc', 'Chi tiết đơn hàng')
+                ->with('meta_keywords', 'chi tiết đơn hàng')
+                ->with('meta_title', 'Chi tiết đơn hàng #' . $order_code)
+                ->with('url_canonical', $request->url());
+        } catch (\Exception $e) {
+            \Log::error('order_detail error: ' . $e->getMessage());
+            return redirect('/orders')->with('error', 'Đơn hàng không tìm thấy.');
+        }
     }
 }

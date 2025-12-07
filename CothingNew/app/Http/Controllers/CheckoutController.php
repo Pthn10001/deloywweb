@@ -61,40 +61,68 @@ class CheckoutController extends Controller
 
    
     public function order(Request $request){
-        $data=$request->all();
-        $shipping = new Shipping();
-        $shipping->shipping_name= $data['shipping_name'];
-        $shipping->shipping_phone= $data['shipping_phone'];
-        $shipping->shipping_email= $data['shipping_email'];
-        $shipping->shipping_address= $data['shipping_address'];
-        $shipping->shipping_notes= $data['shipping_notes'];
-        $shipping->payment_method= $data['payment_method'];
-        $shipping->save();
-        $shipping_id=$shipping->shipping_id;
-        
-        $checkout_code=substr(md5(microtime()),rand(0,24),5);
+        // Validate input
+        $request->validate([
+            'shipping_name' => 'required|string',
+            'shipping_phone' => 'required|string',
+            'shipping_email' => 'required|email',
+            'shipping_address' => 'required|string',
+            'payment_method' => 'required|in:1,2,3'
+        ]);
 
-        $order= new Order();
-        $order->customer_id=session()->get('customer_id');
-        $order->shipping_id=$shipping_id;
-        $order->order_status=1;
-        $order->order_code=$checkout_code;
-        date_default_timezone_set('Asia/Ho_Chi_Minh');
-        $order->created_at=now();        
-        $order->save();  
-        if(session()->get('cart')==true){
-            foreach(session()->get('cart') as $key =>$cart){ 
-                    $order_detail= new OrderDetail();
-                    $order_detail->order_code=$checkout_code;
-                    $order_detail->product_id=$cart["product_id"];
-                    $order_detail->product_name=$cart["product_name"];
-                    $order_detail->product_price=$cart["product_price"];
-                    $order_detail->product_sales_qty=$cart["product_qty"];
-                    $order_detail->product_size=$cart["product_size"]; 
-                    $order_detail->save();
-            }
+        // Check customer_id từ session
+        $customer_id = session()->get('customer_id');
+        if (!$customer_id) {
+            return response()->json(['error' => 'Bạn chưa đăng nhập'], 401);
         }
+
+        // Check cart
+        $cart = session()->get('cart');
+        if (!$cart || empty($cart)) {
+            return response()->json(['error' => 'Giỏ hàng rỗng'], 422);
+        }
+
+        $data = $request->all();
+        $shipping = new Shipping();
+        $shipping->shipping_name = $data['shipping_name'];
+        $shipping->shipping_phone = $data['shipping_phone'];
+        $shipping->shipping_email = $data['shipping_email'];
+        $shipping->shipping_address = $data['shipping_address'];
+        $shipping->shipping_notes = $data['shipping_notes'] ?? '';
+        $shipping->payment_method = $data['payment_method'];
+        $shipping->save();
+        $shipping_id = $shipping->shipping_id;
+        
+        $checkout_code = substr(md5(microtime()), rand(0, 24), 5);
+
+        $order = new Order();
+        $order->customer_id = $customer_id;
+        $order->shipping_id = $shipping_id;
+        $order->order_status = 1;
+        $order->order_code = $checkout_code;
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $order->created_at = now();        
+        $order->save();  
+
+        // Save order details
+        foreach ($cart as $key => $item) { 
+            $order_detail = new OrderDetail();
+            $order_detail->order_code = $checkout_code;
+            $order_detail->product_id = $item["product_id"];
+            $order_detail->product_name = $item["product_name"];
+            $order_detail->product_price = $item["product_price"];
+            $order_detail->product_sales_qty = $item["product_qty"];
+            $order_detail->product_size = $item["product_size"] ?? ''; 
+            $order_detail->save();
+        }
+
         Session()->forget('cart');
+        
+        return response()->json([
+            'success' => true,
+            'order_code' => $checkout_code,
+            'message' => 'Đơn hàng được tạo thành công'
+        ]);
     }
      
     public function logout_checkout(){
@@ -107,6 +135,12 @@ class CheckoutController extends Controller
         $email=$request->email_accout;
         $password=$request->password_accout;
         $result =DB::table('tbl_customer')->where('customer_email',$email)->first();
+        
+        if(!$result){
+            Session()->put('message','Email hoặc mật khẩu sai!');
+            return Redirect::to('/login-checkout');
+        }
+        
         $passworddt=$result->customer_password;
         $emaildt=$result->customer_email;
         if($email==$emaildt){

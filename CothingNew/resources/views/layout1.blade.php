@@ -239,7 +239,7 @@
                 <div class="row">
                     <div class="col-sm-2">
                         <div class="companyinfo">
-                            <h2 style="color: #fff; font-size: 25px; margin-top: 26px;"><span>SHOP</span>Colthing</h2>
+                            <h2 style="color: #fff; font-size: 25px; margin-top: 26px;"><span>SHOP</span>Clothing</h2>
                             <p>Thời trang cao cấp, uy tín, chất lượng vận chuyển nhanh chóng!</p>
                         </div>
                     </div>
@@ -260,7 +260,7 @@
                     <div class="col-sm-3">
                         <div class="address">
                             <img src="{{('frontend/images/home/map.png')}}" alt="" />
-                            <p>Quận Thanh Khê - Thành Phố Đà Nẵng</p>
+                            <p>Quận 5 - Thành Phố Hồ Chí Minh</p>
                         </div>
                     </div>
                 </div>
@@ -274,8 +274,8 @@
                         <div class="single-widget">
                             <h2 style="color: #fff; font-size: 25px;">MUA HÀNG TRỰC TUYẾN</h2>
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">0935938598</a></li>
-                                <li><a href="#">NgoMTien@gmail.com</a></li>
+                                <li><a href="#">078 387 xxx</a></li>
+                                <li><a href="#">Phanthnhien27@gmail.com</a></li>
 
                             </ul>
                         </div>
@@ -284,8 +284,8 @@
                         <div class="single-widget">
                             <h2 style="color: #fff; font-size: 25px;">HOTLINE GÓP Ý</h2>
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">0935938598</a></li>
-                                <li><a href="#">NgoMTien@gmail.com</a></li>
+                                <li><a href="#">078 387 xxx</a></li>
+                                <li><a href="#">PhanThnhien27@gmail.com</a></li>
                             </ul>
                         </div>
                     </div>

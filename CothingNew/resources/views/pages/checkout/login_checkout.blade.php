@@ -16,11 +16,11 @@
 								{{ csrf_field() }}
 								<p>   
 									<label>Email address  <span>*</span></label>
-									<input type="email" name="email_accout" placeholder="Email" />
+									<input type="email" name="email_accout" placeholder="Email" required />
 								</p> 
 								<p>   
 									<label>Passwords <span>*</span></label>
-									<input type="text" name="password_accout" placeholder="Password" />
+									<input type="password" name="password_accout" placeholder="Password" required />
 								</p>   	
 									<div class="login_submit">
 										<button type="submit" class="btn btn-default">Đăng nhập</button>
@@ -42,13 +42,13 @@
 								<form action="{{URL::to('/add-customer')}}" method="post">
 									{{ csrf_field() }}
 										<label>Name  <span>*</span></label>		
-										<input type="text" name="customer_name" placeholder="Name"/>	
+										<input type="text" name="customer_name" placeholder="Name" required/>	
 										<label>Email   <span>*</span></label>									
-										<input type="email" name="customer_email" placeholder="Email Address"/>
+										<input type="email" name="customer_email" placeholder="Email Address" required/>
 										<label>Password  <span>*</span></label>																	
-										<input type="password" name="customer_password" placeholder="Password"/>
+										<input type="password" name="customer_password" placeholder="Password" required/>
 										<label>Phone  <span>*</span></label>														   		
-										<input type="text" name="customer_phone" placeholder="phone"/>
+										<input type="tel" name="customer_phone" placeholder="phone" pattern="[0-9]{10,11}" required/>
 										<p></p>
 										<div class="login_submit">
 										<button type="submit" class="btn btn-default">Đăng kí</button>

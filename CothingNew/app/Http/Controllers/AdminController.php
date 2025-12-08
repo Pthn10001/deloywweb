@@ -23,6 +23,12 @@ class AdminController extends Controller
         $admin_password = $request->admin_password;
 
         $result = DB::table('tbl_admin')->first();
+        
+        if(!$result){
+            Session()->put('message', 'Mật khẩu hoặc tài khoản sai!');
+            return Redirect::to('/admin');
+        }
+        
         $pass=$result->admin_password;
         $admin_emaildt=$result->admin_email;
         // dd($pass);

@@ -11,14 +11,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy toàn bộ project PHP vào server
-COPY ./CothingNew/CothingNew /var/www/html
+COPY ./CothingNew /var/www/html
 
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader || true
-
-# ❗ KHÔNG CHỈNH DOCUMENT ROOT VÀO PUBLIC NỮA
-# Apache DocumentRoot mặc định: /var/www/html
-# → nơi chứa index.php của bạn → KHỚP 100%
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
+    && chmod -R 777 storage bootstrap/cache
 
 EXPOSE 80
 

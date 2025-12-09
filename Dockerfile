@@ -1,6 +1,6 @@
 FROM php:8.0-apache
 
-# Cài extension PHP cần cho Laravel
+# Cài extension PHP
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev zip git unzip curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -16,12 +16,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY CothingNew/CothingNew/ /var/www/html/
 
-# Install Laravel dependencies
+# Install Laravel
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
     && mkdir -p storage bootstrap/cache \
     && chmod -R 777 storage bootstrap/cache
 
-# Use SQLite so Render doesn't need MySQL
+# Use SQLite to avoid MySQL requirement
 RUN mkdir -p database && touch database/database.sqlite
 
 # DocumentRoot = public

@@ -11,8 +11,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# ✅ Lưu ý: Laravel nằm trong CothingNew/CothingNew nên phải copy như sau:
-COPY ./CothingNew/CothingNew /var/www/html
+COPY ./CothingNew /var/www/html
 
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
     && chmod -R 777 storage bootstrap/cache
